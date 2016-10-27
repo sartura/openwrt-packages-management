@@ -7,11 +7,11 @@
 # See /LICENSE for more information.
 #
 
-START=70
+START=90
 STOP=10
 
 USE_PROCD=1
-PROG=/bin/sysrepod
+PROG=/bin/sysrepo-plugind
 
 start_service() {
     procd_open_instance
