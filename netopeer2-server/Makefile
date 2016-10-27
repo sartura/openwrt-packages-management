@@ -13,10 +13,10 @@ PKG_LICENSE:=BSD-3-Clause
 PKG_MAINTAINER:=Mislav Novakovic <mislav.novakovic@sartura.hr>
 
 PKG_NAME:=netopeer2-server
-PKG_VERSION:=0.2.23
+PKG_VERSION:=0.3.19
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_VERSION:=8338ec44f8a4f15128cde979323200952f161fee
+PKG_SOURCE_VERSION:=b48a87fbef3a7eaa7ca3a877b1c3aa119beaca82
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_SOURCE_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://github.com/CESNET/Netopeer2.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_SOURCE_VERSION)
@@ -32,7 +32,7 @@ include $(INCLUDE_DIR)/cmake.mk
 define Package/netopeer2-server
   SECTION:=util
   CATEGORY:=Utilities
-  DEPENDS:=+libyang +libsysrepo +libnetconf2 +openssl
+  DEPENDS:=+sysrepod +sysrepoctl +sysrepocfg +libnetconf2 +openssl
   TITLE:=Netopeer2 server
 endef
 
@@ -54,6 +54,21 @@ define Package/netopeer2-server/install
 
 	$(INSTALL_DIR) $(1)/etc/sysrepo/yang
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/modules/ietf-netconf@2011-06-01.yang $(1)/etc/sysrepo/yang
+
+	$(INSTALL_DIR) $(1)/etc/sysrepo/yang
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/modules/ietf-netconf-monitoring.yang $(1)/etc/sysrepo/yang
+
+	$(INSTALL_DIR) $(1)/etc/sysrepo/yang
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/modules/ietf-netconf-with-defaults@2011-06-01.yang $(1)/etc/sysrepo/yang
+
+	$(INSTALL_DIR) $(1)/etc/sysrepo/yang
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/modules/ietf-netconf-server.yang $(1)/etc/sysrepo/yang
+
+	$(INSTALL_DIR) $(1)/tmp
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/server/stock_config.xml $(1)/tmp
+
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/netopeer2-server.default $(1)/etc/uci-defaults/netopeer2-server
 endef
 
 $(eval $(call BuildPackage,netopeer2-server))
