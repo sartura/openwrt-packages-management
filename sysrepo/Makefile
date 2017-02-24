@@ -1,13 +1,11 @@
 #
-# Copyright (C) 2016 OpenWrt.org
+# Copyright (C) 2017 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
 
 include $(TOPDIR)/rules.mk
-
-PKG_NAME:=sysrepo
 
 PKG_LICENSE:=ASL-2.0
 PKG_MAINTAINER:=Mislav Novakovic <mislav.novakovic@sartura.hr>
@@ -34,53 +32,74 @@ include $(INCLUDE_DIR)/cmake.mk
 define Package/libsysrepo
   SECTION:=util
   CATEGORY:=Utilities
-  DEPENDS:=+libyang +libprotobuf-c +libev +libavl
+  URL:=$(PKG_SOURCE_URL)
   TITLE:=YANG-based data store library
+  DEPENDS:=+libyang +libprotobuf-c +libev +libavl
 endef
 
 define Package/sysrepod
   SECTION:=util
   CATEGORY:=Utilities
-  DEPENDS:=+libsysrepo
+  URL:=$(PKG_SOURCE_URL)
   TITLE:=YANG-based data store daemon
+  DEPENDS:=+libsysrepo
 endef
 
 define Package/sysrepoctl
   SECTION:=util
   CATEGORY:=Utilities
-  DEPENDS:=+libsysrepo
+  URL:=$(PKG_SOURCE_URL)
   TITLE:=sysrepo cli tool
+  DEPENDS:=+libsysrepo
 endef
 
 define Package/sysrepocfg
   SECTION:=util
   CATEGORY:=Utilities
-  DEPENDS:=+libsysrepo
+  URL:=$(PKG_SOURCE_URL)
   TITLE:=sysrepo configuration tool
+  DEPENDS:=+libsysrepo
 endef
 
 define Package/sysrepo-plugind
   SECTION:=util
   CATEGORY:=Utilities
-  DEPENDS:=+libsysrepo
+  URL:=$(PKG_SOURCE_URL)
   TITLE:=sysrepo plugin daemon
+  DEPENDS:=+libsysrepo
 endef
 
 CMAKE_OPTIONS += \
-	-DCMAKE_BUILD_TYPE:STRING=release \
-	-DENABLE_TESTS=OFF \
-	-DBUILD_EXAMPLES=OFF \
+	-DCMAKE_BUILD_TYPE:STRING=Release \
+	-DENABLE_TESTS:BOOL=FALSE \
+	-DBUILD_EXAMPLES:BOOL=FALSE \
 	-DCMAKE_DISABLE_FIND_PACKAGE_SWIG=TRUE \
 	-DGEN_LANGUAGE_BINDINGS:BOOL=FALSE \
 	-DREPOSITORY_LOC:PATH=/etc/sysrepo \
-	-DCMAKE_INSTALL_PREFIX:PATH=/usr
+	-DCMAKE_INSTALL_PREFIX:PATH=/usr \
+	-DENABLE_NACM:BOOL=FALSE
 
 define Package/libsysrepo/install
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/libsysrepo.so* $(1)/usr/lib/
 
 	$(INSTALL_DIR) $(1)/etc/sysrepo/yang/internal
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/yang/* $(1)/etc/sysrepo/yang/internal
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/yang/sysrepo-module-dependencies.yang $(1)/etc/sysrepo/yang/internal
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/yang/sysrepo-notification-store.yang $(1)/etc/sysrepo/yang/internal
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/yang/sysrepo-persistent-data.yang $(1)/etc/sysrepo/yang/internal
+
+	$(INSTALL_DIR) $(1)/etc/sysrepo/yang
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/yang/ietf-netconf-acm@2012-02-22.yang $(1)/etc/sysrepo/yang/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/yang/ietf-netconf-notifications.yang $(1)/etc/sysrepo/yang/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/yang/nc-notifications.yang $(1)/etc/sysrepo/yang/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/yang/notifications.yang $(1)/etc/sysrepo/yang/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/yang/ietf-netconf@2011-06-01.yang $(1)/etc/sysrepo/yang/
+
+	$(INSTALL_DIR) $(1)/etc/sysrepo/data/internal
+	$(INSTALL_DIR) $(1)/etc/sysrepo/data/notifications
+
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/libsysrepo.default $(1)/etc/uci-defaults/95_libsysrepo
 endef
 
 define Package/sysrepod/install
@@ -107,14 +126,6 @@ define Package/sysrepo-plugind/install
 
 	$(INSTALL_DIR) $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/sysrepo-plugind.init $(1)/etc/init.d/sysrepo-plugind
-endef
-
-define Package/libsysrepo/postinst
-#!/bin/sh
-	mkdir /var/run
-	mkdir -p $${IPKG_INSTROOT}/etc/sysrepo/data/internal
-	touch $${IPKG_INSTROOT}/etc/sysrepo/data/internal/sysrepo-module-dependencies.xml
-	exit 0
 endef
 
 $(eval $(call BuildPackage,libsysrepo))

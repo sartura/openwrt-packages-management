@@ -1,0 +1,54 @@
+From 9cb6a683a7f3e59e6c4fd6cd47542c88b676cfff Mon Sep 17 00:00:00 2001
+From: Mislav Novakovic <mislav.novakovic@sartura.hr>
+Date: Tue, 9 May 2017 13:56:16 +0200
+Subject: [PATCH] remove sysrepoctl commands from cmake
+
+Signed-off-by: Mislav Novakovic <mislav.novakovic@sartura.hr>
+---
+ keystored/CMakeLists.txt | 2 ++
+ server/CMakeLists.txt    | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/keystored/CMakeLists.txt b/keystored/CMakeLists.txt
+index ad9923d..26d341e 100644
+--- a/keystored/CMakeLists.txt
++++ b/keystored/CMakeLists.txt
+@@ -105,6 +105,7 @@ endif()
+ install(DIRECTORY DESTINATION ${KEYSTORED_KEYS_DIR}
+         DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE)
+ 
++if(FALSE)
+ # install all the required modules and enable features
+ install(CODE "
+     execute_process(COMMAND ${SYSREPOCTL_EXECUTABLE} -l RESULT_VARIABLE RET OUTPUT_VARIABLE INSTALLED_MODULES ERROR_VARIABLE OUT)
+@@ -154,6 +155,7 @@ install(CODE "
+             message(FATAL_ERROR \"  Command sysrepocfg import failed:\\n  \${OUT}\")
+         endif()
+     endif()")
++endif()
+ 
+ # plugins should be installed into sysrepo plugins dir
+ install(TARGETS keystored DESTINATION ${SR_PLUGINS_DIR})
+diff --git a/server/CMakeLists.txt b/server/CMakeLists.txt
+index 710be4c..f6178b4 100644
+--- a/server/CMakeLists.txt
++++ b/server/CMakeLists.txt
+@@ -147,6 +147,7 @@ include_directories(${SYSREPO_INCLUDE_DIRS})
+ # install binary
+ install(TARGETS netopeer2-server DESTINATION ${CMAKE_INSTALL_BINDIR})
+ 
++if(FALSE)
+ # only for configuration
+ if (ENABLE_CONFIGURATION)
+     # find sysrepoctl
+@@ -239,6 +240,7 @@ if (ENABLE_CONFIGURATION)
+ 
+         endif()")
+ endif()
++endif()
+ 
+ # clean cmake cache
+ add_custom_target(cleancache
+-- 
+2.12.2
+
