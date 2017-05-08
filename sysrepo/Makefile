@@ -13,10 +13,10 @@ PKG_LICENSE:=ASL-2.0
 PKG_MAINTAINER:=Mislav Novakovic <mislav.novakovic@sartura.hr>
 
 PKG_NAME:=sysrepo
-PKG_VERSION:=0.5.11
+PKG_VERSION:=0.6.0
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_VERSION:=be8d146bc4c580e9a8914fa94ef1729d1467122b
+PKG_SOURCE_VERSION:=e4a5705a4c5293ba121048c71899b98243d99edf
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_SOURCE_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://github.com/sysrepo/sysrepo.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_SOURCE_VERSION)
@@ -77,7 +77,7 @@ CMAKE_OPTIONS += \
 
 define Package/libsysrepo/install
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/libsysrepo.so $(1)/usr/lib/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/libsysrepo.so* $(1)/usr/lib/
 
 	$(INSTALL_DIR) $(1)/etc/sysrepo/yang/internal
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/yang/* $(1)/etc/sysrepo/yang/internal

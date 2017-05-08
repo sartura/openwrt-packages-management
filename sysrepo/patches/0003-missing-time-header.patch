@@ -1,0 +1,24 @@
+From 9879167dbb7448e3bc3a2ca81156f51b66c7753e Mon Sep 17 00:00:00 2001
+From: Antonio Paunovic <antonio.paunovic@sartura.hr>
+Date: Mon, 8 May 2017 16:28:16 +0000
+Subject: [PATCH 2/2] missing time header
+
+---
+ inc/sysrepo.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/inc/sysrepo.h b/inc/sysrepo.h
+index 5563dd0..cac9dae 100644
+--- a/inc/sysrepo.h
++++ b/inc/sysrepo.h
+@@ -51,6 +51,7 @@
+  * @ref xp_page "XPath Addressing" is used for node identification in data-related calls.
+  */
+ 
++#include <time.h>
+ #include <stdbool.h>
+ #include <stdint.h>
+ #include <stdlib.h>
+-- 
+2.10.2
+

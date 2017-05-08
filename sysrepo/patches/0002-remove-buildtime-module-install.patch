@@ -1,0 +1,38 @@
+From 435d0b32aa06d987f4e8c872ef4ea9c407776735 Mon Sep 17 00:00:00 2001
+From: Antonio Paunovic <antonio.paunovic@sartura.hr>
+Date: Mon, 8 May 2017 16:23:29 +0000
+Subject: [PATCH 1/2] missing time header
+
+---
+ CMakeLists.txt | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d40f5c3..96d4033 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -280,7 +280,7 @@ install (FILES ${INTERNAL_YANGS} DESTINATION ${INTERNAL_SCHEMA_SEARCH_DIR})
+ 
+ # install NACM YANG module
+ if(ENABLE_NACM)
+-    INSTALL_YANG("ietf-netconf-acm" "@2012-02-22" "644")
++    # INSTALL_YANG("ietf-netconf-acm" "@2012-02-22" "644")
+ endif(ENABLE_NACM)
+ 
+ find_package(PkgConfig QUIET)
+@@ -304,9 +304,9 @@ if(WITH_SYSTEMD)
+         FILES_MATCHING PATTERN "*.service")
+ endif()
+ 
+-INSTALL_YANG("ietf-netconf-notifications" "" "666")
+-INSTALL_YANG("nc-notifications" "" "666")
+-INSTALL_YANG("notifications" "" "666")
++# INSTALL_YANG("ietf-netconf-notifications" "" "666")
++# INSTALL_YANG("nc-notifications" "" "666")
++# INSTALL_YANG("notifications" "" "666")
+ 
+ if(GEN_LANGUAGE_BINDINGS)
+     add_subdirectory(swig)
+-- 
+2.10.2
+
