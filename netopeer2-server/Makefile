@@ -34,16 +34,12 @@ CMAKE_INSTALL:=1
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-define Package/netopeer2-server/config
-  source "$(SOURCE)/Config_server.in"
-endef
-
 define Package/netopeer2-server
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=NETCONF server
   URL:=$(PKG_SOURCE_URL)
-  DEPENDS:=+libpthread +libyang +libnetconf2 +netopeer2-keystored +libsysrepo +sysrepocfg +sysrepoctl +sysrepo +SSH_SERVER:openssh-server
+  DEPENDS:=+libpthread +libyang +libnetconf2 +netopeer2-keystored +libsysrepo +sysrepocfg +sysrepoctl +sysrepo
   MENU:=1
 endef
 
