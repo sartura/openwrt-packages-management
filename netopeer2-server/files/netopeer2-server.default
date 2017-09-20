@@ -46,4 +46,18 @@ if [ -x /bin/sysrepoctl ]; then
 	fi
 fi
 
+# add firewall rule
+$ cat << EOF >> /etc/config/firewall
+config rule
+        option name 'Allow-NETCONF-over-IPv6'
+        option src 'wan'
+        list src_ip '2a00:c37::/32'
+        list src_ip '2003:1c09::/19'
+        option proto 'tcp'
+        option dest_port '830'
+        option family 'ipv6'
+        option target 'ACCEPT'
+        list _access_r 'admin'
+EOF
+
 exit 0
