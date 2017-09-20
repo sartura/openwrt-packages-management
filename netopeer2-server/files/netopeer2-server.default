@@ -39,6 +39,10 @@ if [ -x /bin/sysrepoctl ]; then
 		sysrepoctl --install --yang=/etc/sysrepo/yang/ietf-system.yang -o root:root -p 600
 		sysrepoctl -m ietf-system -e authentication
 		sysrepoctl -m ietf-system -e local-users
+		if [ -x /bin/sysrepocfg ]; then
+			sysrepocfg -d startup -i /usr/share/netopeer2-server/ietf_system.xml ietf-system
+			rm /usr/share/netopeer2-server/ietf_system.xml
+		fi
 	fi
 fi
 

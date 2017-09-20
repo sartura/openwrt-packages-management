@@ -78,6 +78,7 @@ define Package/netopeer2-server/install
 
 	$(INSTALL_DIR) $(1)/usr/share/netopeer2-server
 	$(INSTALL_DATA) ./files/stock_config.xml $(1)/usr/share/netopeer2-server
+	$(INSTALL_DATA) ./files/ietf_system.xml $(1)/usr/share/netopeer2-server
 endef
 
 $(eval $(call BuildPackage,netopeer2-server))
