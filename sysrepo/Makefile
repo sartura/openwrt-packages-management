@@ -15,8 +15,8 @@ PKG_VERSION:=0.7.1
 PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_VERSION:=6930b4a8124950d2bf48734ca8daf55d4e363c4e
-PKG_MIRROR_HASH:=604bdc47677414b3f158f021acd9325b0e94f54e04a007da34a67ca577e36bf2
+PKG_SOURCE_VERSION:=0b36f308574a60d7ee36b1a3118b999618bb40d8
+PKG_MIRROR_HASH:=d28ff0356b6ac4b934bb45ff77973efe7964b86a54270d11e1fd06a2af9bdbc8
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/sysrepo/sysrepo.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION)
@@ -37,7 +37,7 @@ define Package/libsysrepo
   CATEGORY:=Utilities
   URL:=$(PKG_SOURCE_URL)
   TITLE:=YANG-based data store library
-  DEPENDS:=+libyang +libprotobuf-c +libev +librt +libredblack
+  DEPENDS:=+libyang +libprotobuf-c +libev +libredblack +librt
 endef
 
 define Package/sysrepo
