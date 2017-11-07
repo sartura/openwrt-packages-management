@@ -71,7 +71,7 @@ define Package/netopeer2-server/install
 	$(INSTALL_DATA) $(PKG_BUILD_ROOT)/modules/ietf-system.yang $(1)/etc/sysrepo/yang/
 
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/netopeer2-server.default $(1)/etc/uci-defaults/99_netopeer2-server
+	$(INSTALL_BIN) ./files/netopeer2-server.default $(1)/etc/uci-defaults/98_netopeer2-server
 
 	$(INSTALL_DIR) $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/netopeer2-server.init $(1)/etc/init.d/netopeer2-server
