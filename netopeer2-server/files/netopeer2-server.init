@@ -32,7 +32,10 @@ start_service() {
             rm $PERSIST_FILE
             RETRY_CNT=5
         fi
-	done
+    done
+
+    # restart sysrepo to fix broken socket at startup
+    /etc/init.d/sysrepo restart
 
     procd_open_instance
     procd_set_param command $PROG
