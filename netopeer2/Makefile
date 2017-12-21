@@ -9,16 +9,16 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=netopeer2-keystored
+PKG_NAME:=netopeer2
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_MAINTAINER:=Mislav Novakovic <mislav.novakovic@sartura.hr>
 
-PKG_VERSION:=0.4.3
+PKG_VERSION:=0.4.13
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_VERSION:=e7c821cde14df31a03d23293f84e0aed9cb1a457
-PKG_MIRROR_HASH:=b1f5fcd9f499e60ae1cbe4e08666b7463c0a93e4fd08c9443db136f7c0a6e72a
+PKG_SOURCE_VERSION:=ae560bef2e70d274f6d028b59e3cb398ea2a621d
+PKG_MIRROR_HASH:=43b7f9c436afc76de539a7426b1462249326318b9b836f1d49282106a730a6b8
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/CESNET/Netopeer2.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION)
@@ -38,6 +38,23 @@ define Package/netopeer2-keystored/config
   source "$(SOURCE)/Config_keystored.in"
 endef
 
+define Package/netopeer2-server
+  SECTION:=utils
+  CATEGORY:=Utilities
+  TITLE:=NETCONF server
+  URL:=$(PKG_SOURCE_URL)
+  DEPENDS:=+libpthread +libyang +libnetconf2 +netopeer2-keystored +libsysrepo +sysrepocfg +sysrepoctl +sysrepo
+  MENU:=1
+endef
+
+define Package/netopeer2-cli
+  SECTION:=utils
+  CATEGORY:=Utilities
+  TITLE:=Netopeer2 cli tool
+  URL:=$(PKG_SOURCE_URL)
+  DEPENDS:=+libpthread +libyang +libnetconf2 +libopenssl
+endef
+
 define Package/netopeer2-keystored
   SECTION:=utils
   CATEGORY:=Utilities
@@ -47,7 +64,7 @@ define Package/netopeer2-keystored
   MENU:=1
 endef
 
-define Package/netopeer2-keystored/description
+define Package/netopeer2/description
  Netopeer2 is a set of tools implementing network configuration tools based on the NETCONF
  Protocol. This is the second generation of the toolset, originally available as the Netopeer
  project. Netopeer2 is based on the new generation of the NETCONF and YANG libraries -
@@ -59,14 +76,40 @@ CMAKE_OPTIONS += \
 	-DCMAKE_BUILD_TYPE:STRING=Release \
 	-DKEYSTORED_KEYS_DIR:STRING=/etc/keystored/keys
 
-CMAKE_SOURCE_DIR=./keystored
+define Package/netopeer2-server/install
+	$(INSTALL_DIR) $(1)/bin
+	$(INSTALL_BIN) $(PKG_BUILD_ROOT)/server/netopeer2-server $(1)/bin/
+
+	$(INSTALL_DIR) $(1)/etc/sysrepo/yang
+	$(INSTALL_DATA) $(PKG_BUILD_ROOT)/modules/ietf-ssh-server.yang $(1)/etc/sysrepo/yang/ietf-ssh-server@2016-11-02.yang
+	$(INSTALL_DATA) $(PKG_BUILD_ROOT)/modules/ietf-tls-server.yang $(1)/etc/sysrepo/yang/ietf-tls-server@2016-11-02.yang
+	$(INSTALL_DATA) $(PKG_BUILD_ROOT)/modules/iana-crypt-hash.yang $(1)/etc/sysrepo/yang/iana-crypt-hash@2014-08-06.yang
+	$(INSTALL_DATA) $(PKG_BUILD_ROOT)/modules/ietf-x509-cert-to-name.yang $(1)/etc/sysrepo/yang/ietf-x509-cert-to-name@2014-12-10.yang
+	$(INSTALL_DATA) $(PKG_BUILD_ROOT)/modules/ietf-netconf-server.yang $(1)/etc/sysrepo/yang/ietf-netconf-server@2016-11-02.yang
+	$(INSTALL_DATA) $(PKG_BUILD_ROOT)/modules/ietf-system.yang $(1)/etc/sysrepo/yang/ietf-system@2014-08-06.yang
+
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/netopeer2-server.default $(1)/etc/uci-defaults/98_netopeer2-server
+
+	$(INSTALL_DIR) $(1)/etc/init.d/
+	$(INSTALL_BIN) ./files/netopeer2-server.init $(1)/etc/init.d/netopeer2-server
+
+	$(INSTALL_DIR) $(1)/usr/share/netopeer2-server
+	$(INSTALL_DATA) ./files/stock_config.xml $(1)/usr/share/netopeer2-server
+	$(INSTALL_DATA) ./files/ietf_system.xml $(1)/usr/share/netopeer2-server
+endef
+
+define Package/netopeer2-cli/install
+	$(INSTALL_DIR) $(1)/bin
+	$(INSTALL_BIN) $(PKG_BUILD_ROOT)/cli/netopeer2-cli $(1)/bin/
+endef
 
 define Package/netopeer2-keystored/install
 	$(INSTALL_DIR) $(1)/usr/lib/sysrepo/plugins/
-	$(INSTALL_BIN) $(PKG_BUILD_ROOT)/libkeystored.so $(1)/usr/lib/sysrepo/plugins/
+	$(INSTALL_BIN) $(PKG_BUILD_ROOT)/keystored/libkeystored.so $(1)/usr/lib/sysrepo/plugins/
 
 	$(INSTALL_DIR) $(1)/etc/sysrepo/yang
-	$(INSTALL_DATA) $(PKG_BUILD_ROOT)/modules/ietf-keystore.yang $(1)/etc/sysrepo/yang
+	$(INSTALL_DATA) $(PKG_BUILD_ROOT)/modules/ietf-keystore.yang $(1)/etc/sysrepo/yang/ietf-keystore@2016-10-31.yang
 
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
 
@@ -84,4 +127,6 @@ endif
 	$(INSTALL_DATA) $(PKG_BUILD_ROOT)/keystored/stock_key_config.xml $(1)/usr/share/netopeer2-keystored
 endef
 
+$(eval $(call BuildPackage,netopeer2-server))
+$(eval $(call BuildPackage,netopeer2-cli))
 $(eval $(call BuildPackage,netopeer2-keystored))
